@@ -2,7 +2,7 @@
 
 APP_NAME="orchestrator"
 JAR_PATH="target/Orchestrator-1.jar"
-LOG_FILE="app.log"
+LOG_FILE="orchestrator.log"
 
 echo ">>> Pulling latest code..."
 git pull origin main
