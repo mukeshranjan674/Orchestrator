@@ -9,6 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.example.orchestrator.IServices.IOrchestratorService;
@@ -34,15 +35,22 @@ public class OrchestrationService implements IOrchestratorService{
 		
 		logger.info("Trace id : {} | Method : {}", traceId, "retrieveFullName()"); 
 
+		String response = "";
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("X-Trace-Id", traceId);
-		
 		HttpEntity<Name> entity = new HttpEntity<Name>(name, headers);
 		
-		ResponseEntity<String> response = restTemplate.exchange(
-				fullNameServiceUrl + "/api/v1/full-name", HttpMethod.POST, entity, String.class);
+		try {
+			ResponseEntity<String> responseEntity = restTemplate.exchange(
+					fullNameServiceUrl + "/api/v1/full-name", HttpMethod.POST, entity, String.class);
+			response = responseEntity.getBody();
+		}catch(RestClientException e) {
+			logger.error("Full Name service is DOWN, traceId = {}", traceId, e);
+//		    return "Full Name service unavailable";
+		}
 		
-		return response.getBody();
+		
+		return response;
 	}
 	
 	
@@ -52,14 +60,22 @@ public class OrchestrationService implements IOrchestratorService{
 		
 		logger.info("Trace id : {} | Method : {}", traceId, "retrieveGreeting()"); 
 		
+		String response = "";
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("X-Trace-Id", traceId);
 
-		ResponseEntity<String> greeting = restTemplate.exchange(
-				greetingServiceUrl + "/api/v1/get", HttpMethod.GET, new HttpEntity<>(headers), String.class);
+		try {
+			ResponseEntity<String> greetingResponse = restTemplate.exchange(
+					greetingServiceUrl + "/api/v1/get", HttpMethod.GET, new HttpEntity<>(headers), String.class);
+			response = greetingResponse.getBody();
+		}catch(RestClientException e) {
+			logger.error("Greeting service is DOWN, traceId = {}", traceId, e);
+//			return "Greeting service unavailable";
+		}
+		
 
 		
-		return greeting.getBody();
+		return response;
 	}
 
 }
