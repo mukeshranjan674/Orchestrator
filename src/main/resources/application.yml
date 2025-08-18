@@ -6,3 +6,9 @@ server:
 spring:
   application:
     name: Orchestrator
+
+services:
+  greeting-full-name:
+    base-url: http://65.2.39.42:3003/greetingfullname
+  greeting:
+    base-url: http://65.2.39.42:3001/greeting

@@ -5,6 +5,7 @@ JAR_PATH="target/Orchestrator-1.jar"
 LOG_FILE="orchestrator.log"
 
 echo ">>> Pulling latest code..."
+git reset --hard
 git pull origin main
 
 echo ">>> Building project..."
@@ -23,4 +24,4 @@ echo ">>> Starting new JAR..."
 nohup java -jar $JAR_PATH > $LOG_FILE 2>&1 &
 
 NEW_PID=$!
-echo ">>> New app started with PID $NEW_PID"
+echo ">>> $APP_NAME started with PID $NEW_PID"
