@@ -1,6 +1,10 @@
 package com.example.orchestrator.controllers;
 
+import java.util.Set;
 import java.util.UUID;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.orchestrator.IServices.IOrchestratorService;
 import com.example.orchestrator.models.Name;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping("api/v1")
@@ -24,6 +29,9 @@ public class OrchestratorController {
 	
 	@Autowired
 	private IOrchestratorService orchestratorService;
+	
+	@Autowired
+	private Validator validator;
 	
 	public record Response(String response) {};
 	
@@ -36,9 +44,23 @@ public class OrchestratorController {
 	
 	
 	@PostMapping("/greeting")
-	public ResponseEntity<Response> getResponse(@RequestBody(required = true) Name name) {
+	public ResponseEntity<Response> getResponse(@RequestBody(required = true) String requestBody) {
 		String traceId = UUID.randomUUID().toString();
-		logger.info("Trace id : {} | API : {} | payload/details : {}", traceId, "POST /greeting", name.toString()); 
+		logger.info("Trace id : {} | API : {} | payload/details : \n{}", traceId, "POST /greeting", requestBody); 
+		
+		Name name = new Name();
+		try {
+			name = new ObjectMapper().readValue(requestBody, Name.class);
+			Set<ConstraintViolation<Name>> violations = validator.validate(name);
+			if(violations.size() > 0) {
+				throw new IllegalArgumentException();
+			}
+		} catch (Exception e) {
+			logger.error("Error mapping the json | traceId {}", traceId, e);
+			return new ResponseEntity<>(new Response("Invalid JSON"), HttpStatus.BAD_REQUEST);
+		}
+		
+		
 		
 		String greeting = orchestratorService.retrieveGreeting(traceId);
 		String fullName = orchestratorService.retrieveFullName(name, traceId);
