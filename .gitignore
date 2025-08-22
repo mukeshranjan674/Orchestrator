@@ -1,6 +1,4 @@
 # Maven / Spring Boot
-target/
-*.jar
 *.war
 *.ear
 

@@ -1,0 +1,16 @@
+server:
+  port: 3002
+  servlet:
+    context-path: /orchestrator
+
+spring:
+  application:
+    name: Orchestrator
+
+services:
+  full-name:
+    base-url: http://65.2.39.42:3003/fullname
+#    base-url: http://localhost:3003/fullname
+  greeting:
+    base-url: http://65.2.39.42:3001/greeting
+#    base-url: http://localhost:3001/greeting
