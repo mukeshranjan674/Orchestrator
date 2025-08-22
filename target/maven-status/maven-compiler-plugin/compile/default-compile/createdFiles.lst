@@ -1,2 +1,9 @@
+com/example/orchestrator/controllers/OrchestratorController$Response.class
+com/example/orchestrator/controllers/OrchestratorController.class
+com/example/orchestrator/config/RestTemplateConfig.class
+com/example/orchestrator/IServices/IOrchestratorService.class
+com/example/orchestrator/config/SwaggerConfig.class
 com/example/orchestrator/controllers/TestController.class
 com/example/orchestrator/OrchestratorApplication.class
+com/example/orchestrator/models/Name.class
+com/example/orchestrator/services/OrchestrationService.class
